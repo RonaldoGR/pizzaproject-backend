@@ -1,5 +1,8 @@
 import express from "express";
-import pool from "../config/db.js";
+import { listarUsuario, inserirUsuario, deletarUsuario, verificarEmail, testejwt } from "../controllers/userControllers.js";
+import { authenticateToken } from "../middlewares/middlewares.js";
+
+
 
  const routes = (app) => {
     app.use(express.json());
@@ -9,29 +12,13 @@ import pool from "../config/db.js";
     
     app.get("/login", (req, res) => {
         res.status(200).send("Rota de login");
-        console.log('ok')
     });
-    
-    app.post("/login",  (req, res) => {
-    
-        const { name, email, password } = req.body;
-        const insertUser = `
-            INSERT INTO users (name, email, password)
-            VALUES (?, ? , ?);
-        `
-        const createUser = pool.query(insertUser, [name, email, password], (err, results) => {
-            if (err) {
-                console.error("Erro ao inserir usuário teste na tabela users:", err);
-                return res.status(500).json({ message: "Erro ao cadastrar usuário" });
-            }
-            console.log("Usuário cadastrado.");
-            return res.status(201).json({ message:"Usuário cadastrado!"});
-        });
-        return createUser; 
-    });    
-    
-    
-    
+
+    app.get("/users/:id", listarUsuario);
+    app.post("/signup", inserirUsuario);   
+    app.post("/login", verificarEmail);
+    app.get("/testejwt",authenticateToken, testejwt);
+    app.delete("/users/:id", deletarUsuario);    
     
     app.get("/pedidos", (req, res) => {
         res.status(200).json({ message: "Rota de pedidos" });

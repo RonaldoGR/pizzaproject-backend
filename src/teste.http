@@ -1,21 +1,35 @@
-GET http://localhost:3000/login HTTP/1.1
+GET http://localhost:3000/login 
 
 
 ###
+GET http://localhost:3000/users/
 
-POST http://localhost:3000/login 
+
+###
+POST http://localhost:3000/signup 
 Content-Type: application/json
 
 {
-    "name": "nome teste 5",
-    "email": "email teste 5",
-    "password": "senha teste 5"
+    "name": "teste",
+    "email": "teste@email.com",
+    "password": "senha teste"
 }
 
 
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "teste@email.com",
+    "password": "senha teste"
+}
+
 
 ###
+DELETE http://localhost:3000/users/13
 
-GET http://localhost:3000/pedidos
 
-###
+### 
+GET http://localhost:3000/testejwt
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RlQGVtYWlsLmNvbSIsInBhc3N3b3JkIjoic2VuaGEgdGVzdGUiLCJpYXQiOjE3NDEyMTc3MjAsImV4cCI6MTc0MTIxNzczNX0.qxp2GmlO2wcOY8t2ME5v6SHykAZdaijBMptbWsbVaqg
