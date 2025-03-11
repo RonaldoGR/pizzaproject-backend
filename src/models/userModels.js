@@ -2,7 +2,6 @@ import pool from "../config/db.js";
 import bcrypt from "bcryptjs";
 
 
-
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -25,18 +24,12 @@ const createUsersT = async () => {
 createUsersT();
 
 
-const selectUser = ` SELECT name, email FROM users
-WHERE id = ?
-`
-const insertUser = ` INSERT INTO users (name, email, password)
-            VALUES (?, ? , ?);`
-
+const selectUser = ` SELECT name, email FROM users WHERE id = ?`;
+const insertUser = ` INSERT INTO users (name, email, password) VALUES (?, ? , ?);`;
 const deleteUser = `DELETE FROM users WHERE id = ?;`
 const userEmail =`SELECT * FROM users WHERE  email = ?;`;
 const verifyEmail = `SELECT email FROM users WHERE email = ?`; 
 const selectId = `SELECT id FROM users WHERE id = ?`;
-
-
 
 
 export  async function user(id) {
@@ -58,15 +51,18 @@ export  async function user(id) {
 
 
 
-
 export async function insertUserOnDB(userName, userEmail, userPassword) {
     try {
+
+        if (!userEmail) {
+            return { message: "Insira um e-mail válido para continuar." };
+        }
 
         const [ resultado ] = await pool.query(verifyEmail, [userEmail]);
 
         if(resultado.length) {
             console.log("E-mail já cadastrado no banco de dados");
-            return { message: "E-mail já cadastrado, por favor utilize outro." }
+            return { message: "E-mail já cadastrado, por favor utilize outro." };
         }
 
 
@@ -99,7 +95,7 @@ export async function deleteUserOnDB (id) {
         
     } catch (error) {
         console.error("Erro ao verificar usuário.");
-        return { message: "Usuário não existe." }
+        return { message: "Usuário não existe." };
         
     }
 };
@@ -110,13 +106,17 @@ export async function deleteUserOnDB (id) {
 export const getUserByEmail = async ( email, userPassword) => {
     
     try {
+        if (!email || !userPassword) {
+            return { message: "Forneça e-mail e senha para continuar." };
+        }
+
         const [ results ] = await pool.query(userEmail, [email]);
         if (results.length === 0) {
             console.log("E-mail incorreto ou não cadastrado");
             return { message: "E-mail incorreto ou não cadastrado" };
         }
 
-        const {  password: hashedPassword } = results[0]
+        const {  password: hashedPassword } = results[0];
 
 
         const matchPassword = await bcrypt.compare(userPassword, hashedPassword);
@@ -125,13 +125,11 @@ export const getUserByEmail = async ( email, userPassword) => {
             console.error("Senha do usuário incorreta.");
             return { message: "Senha do usuário incorreta." };
         }
-
-        return { message: "Login realizado com sucesso" };
+  
+        return results[0];
        
     } catch (error) {
         console.error(error);
         throw new Error("Erro ao realizar login.");
-        
     }
-
 };

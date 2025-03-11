@@ -2,8 +2,9 @@ import dotenv from "dotenv"
 dotenv.config();
 
 import { user,  insertUserOnDB, deleteUserOnDB, getUserByEmail } from "../models/userModels.js";
-import { generateAuthenticateToken } from "../middlewares/middlewares.js";
+import { generateAuthenticateToken, JWT_SIGNIN_KEY } from "../middlewares/middlewares.js";
 import jwt from 'jsonwebtoken';
+import testeRedis from "../config/redis.js";
 
 
 
@@ -49,33 +50,43 @@ export async function verificarEmail(req, res) {
    
    try {
         const { email, password } = req.body; 
-        const user = { email: email, password: password };
-        const acessToken = generateAuthenticateToken(user);
-        const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN);
-        const resultado = await getUserByEmail( email, password);
 
-        if (resultado.message == "E-mail incorreto ou não cadastrado") {
+        
+        const resultado = await getUserByEmail( email, password);
+        
+        if (!resultado || resultado.message == "E-mail incorreto ou não cadastrado") {
             return res.status(401).json("E-mail incorreto ou não cadastrado");
         }
-
+        
         if (resultado.message === "Senha do usuário incorreta.") {
             return res.status(401).json({ error: "Senha incorreta" });
         }
+   
+        const user = { name: resultado.name,  id: resultado.id, email: resultado.email };
 
+        const acessToken = generateAuthenticateToken(user);
+        const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN);
+
+        testeRedis(refreshToken);
         res.status(200).json({ acessToken: acessToken, refreshToken: refreshToken });
    } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(500).json('Erro intero ao tentar realizar login');
    }
 };
 
 
-export async function testejwt (req, res) {
+
+export async function testeJwt (req, res) {
     try {
-        return res.json(req.user.email)
-        
+        const authHeader = req.headers['authorization'];
+        const token =  authHeader && authHeader.split(" ")[1];
+        const decoded = jwt.decode(token);
+        const userName = decoded.name;
+        return res.json(`Nome de usuário: ${userName} `);
     } catch (error) {
         console.error(error);
-        res.status(500);
+        res.status(500).json({ error: "Erro interno ao processar requisição" });
     }
 }
+

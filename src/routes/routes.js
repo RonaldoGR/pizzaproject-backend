@@ -1,5 +1,5 @@
 import express from "express";
-import { listarUsuario, inserirUsuario, deletarUsuario, verificarEmail, testejwt } from "../controllers/userControllers.js";
+import { listarUsuario, inserirUsuario, deletarUsuario, verificarEmail, testeJwt } from "../controllers/userControllers.js";
 import { authenticateToken } from "../middlewares/middlewares.js";
 
 
@@ -17,7 +17,7 @@ import { authenticateToken } from "../middlewares/middlewares.js";
     app.get("/users/:id", listarUsuario);
     app.post("/signup", inserirUsuario);   
     app.post("/login", verificarEmail);
-    app.get("/testejwt",authenticateToken, testejwt);
+    app.get("/testejwt",authenticateToken, testeJwt);
     app.delete("/users/:id", deletarUsuario);    
     
     app.get("/pedidos", (req, res) => {

@@ -25,6 +25,10 @@ Content-Type: application/json
     "password": "senha teste"
 }
 
+# {
+#     "email": "email teste",
+#     "password": "senha teste"
+# }
 
 ###
 DELETE http://localhost:3000/users/13
@@ -32,4 +36,4 @@ DELETE http://localhost:3000/users/13
 
 ### 
 GET http://localhost:3000/testejwt
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RlQGVtYWlsLmNvbSIsInBhc3N3b3JkIjoic2VuaGEgdGVzdGUiLCJpYXQiOjE3NDEyMTc3MjAsImV4cCI6MTc0MTIxNzczNX0.qxp2GmlO2wcOY8t2ME5v6SHykAZdaijBMptbWsbVaqg
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdGUiLCJpZCI6MTQsImVtYWlsIjoidGVzdGVAZW1haWwuY29tIiwiaWF0IjoxNzQxNjQ1MTMzLCJleHAiOjE3NDE2NDU3MzN9.TC7qdzjA3e259SBjzmE8xgKuAIEeKgFgklG71_AgNz0
